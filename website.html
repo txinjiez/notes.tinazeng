@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tina Zeng</title>
+    <link rel="icon" href="favicon.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Courier New', monospace;
+            background: #f5f5f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        .header {
+            position: fixed;
+            top: 18px;
+            right: 24px;
+            text-align: right;
+            z-index: 6;
+        }
+
+        .namemark-header {
+            width: 250px;
+            height: auto;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            position: relative;
+        }
+
+        .ascii-art {
+            text-align: left;
+            font-size: 11px;
+            line-height: 1.1;
+            color: #333;
+            margin: 40px auto;
+            white-space: pre;
+            font-family: monospace;
+            letter-spacing: 0;
+            display: inline-block;
+        }
+
+        .ascii-container {
+            text-align: center;
+            position: relative;
+        }
+
+        .tagline {
+            text-align: center;
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 60px;
+            font-style: italic;
+        }
+
+        .folders-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .folder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+            text-decoration: none;
+            position: absolute;
+            pointer-events: auto;
+        }
+
+        .folder:hover {
+            transform: translateY(-5px);
+        }
+
+        .folder:nth-child(1) {
+            top: 12%;
+            left: 3%;
+        }
+
+        .folder:nth-child(2) {
+            top: 55%;
+            left: 5%;
+        }
+
+        .folder:nth-child(3) {
+            top: 18%;
+            right: 2%;
+        }
+
+        .folder:nth-child(4) {
+            top: 58%;
+            right: 1%;
+        }
+
+        .folder-icon {
+            width: 120px;
+            height: 100px;
+            position: relative;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .folder-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .folder-label {
+            font-size: 1rem;
+            color: #2c2c2c;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 24px;
+            padding: 20px 0 24px;
+            color: #796188;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .social-link {
+            font-size: 1.2rem;
+            color: #666;
+            text-decoration: none;
+            transition: opacity 0.2s;
+            display: inline-block;
+        }
+
+        .social-link img {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+        }
+
+        .social-link:hover {
+            opacity: 0.7;
+        }
+
+        .email {
+            font-size: 0.95rem;
+            color: #796188;
+            letter-spacing: 1px;
+            margin-top: 15px;
+        }
+
+        /* Clouds animation */
+        .clouds-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .cloud {
+            position: absolute;
+            font-family: monospace;
+            font-size: 10px;
+            line-height: 1.2;
+            color: #d0d0d0;
+            white-space: pre;
+            animation: float linear infinite;
+            text-align: left;
+        }
+
+        .cloud1 {
+            top: 10px;
+            animation-duration: 60s;
+            animation-delay: 0s;
+        }
+
+        .cloud2 {
+            top: 40px;
+            animation-duration: 80s;
+            animation-delay: -20s;
+        }
+
+        .cloud3 {
+            top: 15px;
+            animation-duration: 70s;
+            animation-delay: -40s;
+        }
+
+        @keyframes float {
+            from {
+                transform: translateX(-200px);
+            }
+            to {
+                transform: translateX(calc(100vw + 200px));
+            }
+        }
+
+        /* Modal for folder content */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 54px;
+            max-width: 960px;
+            width: 95%;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 8px;
+            position: relative;
+            animation: slideUp 0.3s;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #666;
+            background: none;
+            border: none;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover {
+            color: #2c2c2c;
+        }
+
+        .modal-content h2 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            color: #2c2c2c;
+            letter-spacing: 2px;
+        }
+
+        .modal-content p {
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                position: fixed;
+                top: 12px;
+                left: 50%;
+                transform: translateX(-50%);
+                text-align: center;
+                margin-bottom: 0;
+                background: transparent;
+            }
+
+            .namemark-header {
+                width: 180px;
+            }
+
+            .ascii-art {
+                font-size: 5.5px;
+            }
+
+            .folders-container {
+                position: static;
+                width: 100%;
+                height: auto;
+                display: flex;
+                flex-direction: row;
+                justify-content: center;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 18px;
+                margin: 24px auto 0;
+                pointer-events: auto;
+            }
+
+            .folder {
+                position: static;
+                transform: scale(0.85);
+            }
+
+            .folder-icon {
+                width: 80px;
+                height: 70px;
+            }
+
+            .social-link img {
+                width: 35px;
+                height: 35px;
+            }
+
+            .clouds-container {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="clouds-container">
+        <div class="cloud cloud1">
+              .-~~~-.
+      .- ~ ~-(       )_ _
+     /                     ~ -.
+    |                           \
+     \                         .'
+       ~- . _____________ . -~
+        </div>
+        <div class="cloud cloud2">
+             .-~~~-.
+     .- ~ ~-(       )
+    /                ~ -.
+   |                     \
+    \                    /
+      ~- . ______ .-~ .'
+        </div>
+        <div class="cloud cloud3">
+           .-~~~-.
+   .- ~   ~(     )_ _
+  /                   ~-.
+  |                      \
+   \                     /
+     ~- . _____ .-~ .'''
+        </div>
+    </div>
+
+    <div class="header">
+        <img src="namemark.svg" alt="Tina Zeng" class="namemark-header">
+    </div>
+
+    <div class="container">
+        <div class="ascii-container">
+        <div class="ascii-art" role="img" aria-label="ASCII art of a hydrangea flower">                                      ..-----..------..-----...
+                                    ...------..------..------....
+                                ... .--------------------------.....
+                               .----------------.....---------------..
+                            ....---------------......---------------....
+                           ..--------...-----..------..-----...--------.
+                       ..---------------.....----------.....---------------.
+                       ..---------------.   .----------..  .---------------.
+                       ..---------------.  ..----------..  .---------------..
+                       ...------------.-...--..------..-......------------...
+                    .......----------..------..------..-----...----------.......
+                    ..-------...---..-----------....-----------...--...-------..
+                    ..--------..-.-.------------.. .------------....-.--------..
+                    ..----------...-------------....--------------..-----------.
+                    ....--------...-------------..  .-------------..--------....
+                    ....------......----------.-....-..---------..--..------....
+                    ..-------...---..--------..------..--------...--...--------.
+                    ..-----..--------........----------........--------..------.
+                    ......--------------.   .----------.   .--------------......
+                         ..-------------.....----------.....-------------..
+                         ..---------------...----------...----------------..
+                         ..------------------..------..-------------------..
+                         ..------------------...-----..------------------..
+                          ...--------...--------....--------...--------....
+                            ....---..--------------------------...--....
+                               .--...--------------------------...--..
+                               ......--------------------------.    .
+                                    ....-----..-+++++..-----....
+                                      ..-----..-+++++..-----..
+                 ...................          .-+++++.          ...................
+                 .-+++++++++++++++-.          .-+++++..         ..+++++++++++++++..
+                 .-++++++++++++++++-----.     .-+++++.      .-----+++++++++++++++-.
+                 .-++++++++++++++++++++-....  .-+++++.  ....-++++++++++++++++++++-.
+                  ...-++++++++++++++++++++..  .-+++++.. ..-+++++++++++++++++++-.
+                    .-+++++++---++++++++++..  .-+++++.. ..++++++++++---+++++++-.
+                    .-+++++++-..++++++++++..  .-+++++.  ..++++++++++-..+++++++-.
+                    .-+++++++++-..  .+++++..  .-+++++.  ..+++++..  .++++++++++-.
+                    ....++++++++-----..-++..  .-++++-.  ..+++-------++++++++-...
+                      ..+++++++++++++..-++-....-++++-....-++-..+++++++++++++-.
+                       .+++++++++++++++++++++..-++++-..+++++++++++++++++++++-.
+                       ...-++++++++++++-..-+++++++++++++++-.-++++++++++++-....
+                         ..-------------..--+++++++++++++-...---+---------..
+                                         ....++++++++++-..  ...
+                                            ...-++++-....
+                                              .-++++-..
+                                              .-+++++..
+                                              .-+++++.
+                                              .-+++++.
+                                              .-+++++.
+                                              .-+++++.
+                                              :._+++_. </div>
+
+            <div class="folders-container">
+                <a href="about.html" class="folder" data-folder="about">
+                    <div class="folder-icon">
+                        <img src="folder.svg" alt="folder">
+                    </div>
+                    <div class="folder-label">about</div>
+                </a>
+                <a href="musings.html" class="folder" data-folder="musings">
+                    <div class="folder-icon">
+                        <img src="folder.svg" alt="folder">
+                    </div>
+                    <div class="folder-label">musings</div>
+                </a>
+                <a href="resume.html" class="folder" data-folder="resume">
+                    <div class="folder-icon">
+                        <img src="folder.svg" alt="folder">
+                    </div>
+                    <div class="folder-label">resume</div>
+                </a>
+                <a href="portfolio.html" class="folder" data-folder="portfolio">
+                    <div class="folder-icon">
+                        <img src="folder.svg" alt="folder">
+                    </div>
+                    <div class="folder-label">portfolio</div>
+                </a>
+            </div>
+        </div>
+
+        <div class="tagline">𖥧𖤣.᪥𖥧𖤣᪥ hydrangeas in purple, my favorite flowers, symbolize the desire to deeply understand. ᪥.𖤣𖥧᪥.𖤣𖥧
+</div>
+
+        <div class="footer">
+            <div class="social-links">
+                <a href="mailto:tina.zeng@yale.edu" class="social-link"><img src="social-media/email.png" alt="Email"></a>
+                <a href="https://www.linkedin.com/in/xinjie-tina-zeng/" class="social-link" target="_blank"><img src="social-media/linkedin.png" alt="LinkedIn"></a>
+                <a href="https://github.com/txinjiez" class="social-link" target="_blank"><img src="social-media/github.png" alt="GitHub" width="55" height="55"></a>
+                <a href="https://bsky.app/profile/tinazeng.bsky.social" class="social-link" target="_blank"><img src="social-media/bluesky.png" alt="Bluesky"></a>
+            </div>
+            <div class="email">tina.zeng@yale.edu</div>
+            <div style="margin-top: 55px;">Tina Zeng © 2025</div>
+        </div>
+    </div>
+
+    <script></script>
+</body>
+</html>
