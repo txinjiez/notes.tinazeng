@@ -80,8 +80,6 @@ const config: QuartzConfig = {
       Plugin.ContentPage(),
       Plugin.FolderPage(),
       Plugin.TagPage(),
-      Plugin.Graph(),
-      Plugin.PageGraph(),
       Plugin.ContentIndex({
         enableSiteMap: true,
         enableRSS: true,
