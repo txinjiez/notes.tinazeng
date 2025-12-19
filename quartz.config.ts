@@ -8,7 +8,7 @@ import * as Plugin from "./quartz/plugins"
  */
 const config: QuartzConfig = {
   configuration: {
-    pageTitle: "Quartz 4",
+    pageTitle: "Tina Zeng",
     pageTitleSuffix: "",
     enableSPA: true,
     enablePopovers: true,
@@ -30,10 +30,10 @@ const config: QuartzConfig = {
       colors: {
         lightMode: {
           light: "#f5f5f5",
-          lightgray: "#e7e3ed",
-          gray: "#c7bdcf",
-          darkgray: "#5c4f70",
-          dark: "#796188",
+          lightgray: "#d0d0d0",
+          gray: "#666",
+          darkgray: "#555",
+          dark: "#2c2c2c",
           secondary: "#796188",
           tertiary: "#a18fb4",
           highlight: "rgba(121, 97, 136, 0.14)",
@@ -42,13 +42,13 @@ const config: QuartzConfig = {
         darkMode: {
           light: "#17141a",
           lightgray: "#2f2a34",
-          gray: "#5a4f64",
-          darkgray: "#d9cfdf",
-          dark: "#f1eafb",
-          secondary: "#d9cfdf",
-          tertiary: "#a18fb4",
-          highlight: "rgba(209, 192, 224, 0.18)",
-          textHighlight: "#d9cfdf55",
+          gray: "#666",
+          darkgray: "#d0d0d0",
+          dark: "#f5f5f5",
+          secondary: "#a18fb4",
+          tertiary: "#796188",
+          highlight: "rgba(161, 143, 180, 0.18)",
+          textHighlight: "#a18fb455",
         },
       },
     },
